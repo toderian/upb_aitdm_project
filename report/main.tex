@@ -50,8 +50,8 @@
 This report presents the development and evaluation of a deep learning model for COVID-19 detection from chest X-ray images using the COVIDx CXR-4 dataset. We implement a centralized baseline model using a pretrained ResNet18 architecture and evaluate its performance using comprehensive medical imaging metrics. The centralized model achieves 55.51\% accuracy with an AUC-ROC of 0.600 on the test set. This baseline serves as the foundation for future federated learning experiments and trustworthiness enhancements including differential privacy and interpretability mechanisms.
 \end{abstract}
 
-\tableofcontents
-\newpage
+%\tableofcontents
+%\newpage
 
 %==============================================================================
 \section{Introduction}
@@ -424,29 +424,6 @@ This Stage 1 report establishes a centralized baseline for COVID-19 detection fr
 The baseline model provides a foundation for comparing federated learning approaches and evaluating the impact of trustworthiness enhancements. Future work will focus on improving model performance while incorporating privacy-preserving mechanisms and interpretability tools.
 
 %==============================================================================
-\section{Appendix: Project Structure}
-%==============================================================================
-
-\begin{verbatim}
-upb_aitdm_project/
-├── configs/training_config.yaml
-├── evaluation/
-│   ├── evaluate_centralized.py
-│   ├── metrics.py
-│   └── data_loader.py
-├── model_side/
-│   ├── models/
-│   │   ├── cnn_model.py
-│   │   └── train_centralized.py
-│   ├── data/
-│   │   └── data_loader_enhanced.py
-│   └── federated/
-│       ├── server.py
-│       └── client.py
-├── models/best_centralized.pth
-├── results/stage1/centralized_history.json
-└── dataset/archive/
-\end{verbatim}
 
 %==============================================================================
 % References

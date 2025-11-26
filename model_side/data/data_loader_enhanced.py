@@ -9,7 +9,7 @@ import os
 
 # --- CONFIGURATION (Member 1 Settings) ---
 # Ensure these match your actual file names
-ZIP_FILE_PATH = "archive.zip"
+ZIP_FILE_PATH = "../../Dani/Dani/archive.zip"
 IMG_SIZE = (224, 224)   # Standard for ResNet/VGG
 BATCH_SIZE = 32
 

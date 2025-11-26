@@ -4,4 +4,7 @@ venv
 *.pth
 
 
-/archive.zip
+/Dani/Dani/archive.zip
+/report/
+/planning/
+/course_docs/
