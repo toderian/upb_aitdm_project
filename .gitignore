@@ -8,3 +8,4 @@ venv
 /report/
 /planning/
 /course_docs/
+__pycache__/
