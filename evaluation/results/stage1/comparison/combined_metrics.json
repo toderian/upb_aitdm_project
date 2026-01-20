@@ -1,0 +1,81 @@
+{
+  "centralized": {
+    "accuracy": 0.5550577693940109,
+    "precision": 0.6068649885583524,
+    "recall": 0.3126621079933978,
+    "f1": 0.4126984126984127,
+    "precision_macro": 0.5719730691561017,
+    "recall_macro": 0.5550577693940109,
+    "f1_macro": 0.5272829698716963,
+    "precision_weighted": 0.5719730691561017,
+    "recall_weighted": 0.5550577693940109,
+    "f1_weighted": 0.5272829698716963,
+    "sensitivity": 0.3126621079933978,
+    "specificity": 0.7974534307946239,
+    "true_positives": 1326,
+    "true_negatives": 3382,
+    "false_positives": 859,
+    "false_negatives": 2915,
+    "auc_roc": 0.6003262745230604,
+    "auc_pr": 0.6167142757530732,
+    "confusion_matrix": [
+      [
+        3382,
+        859
+      ],
+      [
+        2915,
+        1326
+      ]
+    ],
+    "Negative_precision": 0.537081149753851,
+    "Negative_recall": 0.7974534307946239,
+    "Negative_f1": 0.6418675270449801,
+    "Positive_precision": 0.6068649885583524,
+    "Positive_recall": 0.3126621079933978,
+    "Positive_f1": 0.4126984126984127,
+    "model_name": "centralized",
+    "evaluation_timestamp": "2025-11-26T03:20:27.959696",
+    "num_samples": 8482
+  },
+  "decentralized": {
+    "accuracy": 0.5029474180617779,
+    "precision": 0.5014861490904767,
+    "recall": 0.9945767507663287,
+    "f1": 0.6667720518495099,
+    "precision_macro": 0.5887712435593229,
+    "recall_macro": 0.5029474180617779,
+    "f1_macro": 0.34451775134219464,
+    "precision_weighted": 0.5887712435593229,
+    "recall_weighted": 0.5029474180617779,
+    "f1_weighted": 0.34451775134219464,
+    "sensitivity": 0.9945767507663287,
+    "specificity": 0.01131808535722707,
+    "true_positives": 4218,
+    "true_negatives": 48,
+    "false_positives": 4193,
+    "false_negatives": 23,
+    "auc_roc": 0.5588011918772078,
+    "auc_pr": 0.540402988096256,
+    "confusion_matrix": [
+      [
+        48,
+        4193
+      ],
+      [
+        23,
+        4218
+      ]
+    ],
+    "Negative_precision": 0.676056338028169,
+    "Negative_recall": 0.01131808535722707,
+    "Negative_f1": 0.022263450834879406,
+    "Positive_precision": 0.5014861490904767,
+    "Positive_recall": 0.9945767507663287,
+    "Positive_f1": 0.6667720518495099,
+    "model_name": "decentralized",
+    "evaluation_timestamp": "2025-11-26T13:49:33.603307",
+    "num_samples": 8482
+  },
+  "comparison_timestamp": "2025-11-26T13:49:53.890894"
+}

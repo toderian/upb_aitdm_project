@@ -262,10 +262,10 @@
    ```python
    # main_centralized.py
    import argparse
-   from src.models.cnn_model import COVIDxCNN
-   from src.models.train_centralized import Trainer
-   from src.data.dataset import COVIDxDataset
-   from src.data.preprocessing import get_train_transforms, get_test_transforms
+   from model_side.models.cnn_model import COVIDxCNN
+   from model_side.models.train_centralized import Trainer
+   from model_side.data.dataset import COVIDxDataset
+   from model_side.data.preprocessing import get_train_transforms, get_test_transforms
 
    def main(args):
        # Config
@@ -410,7 +410,7 @@
 
 3. **Test server startup**
    ```bash
-   python src/federated/server.py --num_rounds 5 --num_clients 3 --local_epochs 2
+   python model_side/federated/server.py --num_rounds 5 --num_clients 3 --local_epochs 2
    ```
 
 #### Deliverables:
@@ -436,9 +436,9 @@
    from collections import OrderedDict
    from typing import Dict, List, Tuple
 
-   from src.models.cnn_model import COVIDxCNN
-   from src.data.dataset import COVIDxClientDataset
-   from src.data.preprocessing import get_train_transforms, get_test_transforms
+   from model_side.models.cnn_model import COVIDxCNN
+   from model_side.data.dataset import COVIDxClientDataset
+   from model_side.data.preprocessing import get_train_transforms, get_test_transforms
 
    class COVIDxClient(fl.client.NumPyClient):
        """
@@ -574,16 +574,16 @@
    # run_fl_experiment.sh
 
    # Start server in background
-   python src/federated/server.py --num_rounds 10 --num_clients 3 --local_epochs 3 &
+   python model_side/federated/server.py --num_rounds 10 --num_clients 3 --local_epochs 3 &
    SERVER_PID=$!
 
    # Wait for server to start
    sleep 5
 
    # Start clients
-   python src/federated/client.py --client_id 1 --server_address 0.0.0.0:8080 &
-   python src/federated/client.py --client_id 2 --server_address 0.0.0.0:8080 &
-   python src/federated/client.py --client_id 3 --server_address 0.0.0.0:8080 &
+   python model_side/federated/client.py --client_id 1 --server_address 0.0.0.0:8080 &
+   python model_side/federated/client.py --client_id 2 --server_address 0.0.0.0:8080 &
+   python model_side/federated/client.py --client_id 3 --server_address 0.0.0.0:8080 &
 
    # Wait for all processes
    wait
@@ -829,8 +829,8 @@ Noise multiplier: Scale of Gaussian noise added
 3. **Test DP training**
    ```python
    # Test script
-   from src.models.cnn_model import SimpleCNN  # Use smaller model for DP
-   from src.privacy.dp_training import train_with_dp
+   from model_side.models.cnn_model import SimpleCNN  # Use smaller model for DP
+   from model_side.privacy.dp_training import train_with_dp
 
    model = SimpleCNN(num_classes=4)
    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

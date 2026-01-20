@@ -2,3 +2,11 @@
 .venv
 venv
 *.pth
+
+
+/Dani/Dani/archive.zip
+/report/
+/planning/
+/course_docs/
+__pycache__/
+/models/

@@ -283,10 +283,10 @@
    from pathlib import Path
    from torch.utils.data import DataLoader
 
-   from src.models.cnn_model import COVIDxCNN
-   from src.data.dataset import COVIDxDataset
-   from src.data.preprocessing import get_test_transforms
-   from src.evaluation.metrics import MetricsCalculator, MetricsVisualizer
+   from model_side.models.cnn_model import COVIDxCNN
+   from model_side.data.dataset import COVIDxDataset
+   from model_side.data.preprocessing import get_test_transforms
+   from model_side.evaluation.metrics import MetricsCalculator, MetricsVisualizer
 
 
    class ModelEvaluator:
@@ -410,7 +410,7 @@
 
 2. **Run full evaluation**
    ```bash
-   python src/evaluation/evaluate.py \
+   python model_side/evaluation/evaluate.py \
        --model_path models/best_centralized.pth \
        --data_dir data/processed \
        --output_dir results/stage1/centralized
@@ -448,7 +448,7 @@
 
 2. **Evaluate global federated model**
    ```bash
-   python src/evaluation/evaluate.py \
+   python model_side/evaluation/evaluate.py \
        --model_path models/federated_final.pth \
        --data_dir data/processed \
        --output_dir results/stage1/federated
@@ -719,7 +719,7 @@
 
 3. **Test Grad-CAM implementation**
    ```python
-   from src.interpretability.gradcam import GradCAMExplainer, get_target_layer
+   from model_side.interpretability.gradcam import GradCAMExplainer, get_target_layer
 
    model = COVIDxCNN(num_classes=4)
    model.load_state_dict(torch.load('models/best_centralized.pth'))

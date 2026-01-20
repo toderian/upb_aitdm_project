@@ -1,0 +1,448 @@
+\documentclass[11pt,a4paper]{article}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{enumitem}
+
+% Page setup
+\geometry{margin=2.5cm}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    citecolor=blue,
+}
+
+% Title
+\title{
+    \textbf{AI for Trustworthy Decision Making} \\
+    \Large COVID-19 Detection from Chest X-Ray Images \\
+    \large Stage 1: Baseline Development \& Centralized Training
+}
+
+\author{
+    AITDM Project Team \\
+    University Politehnica of Bucharest
+}
+
+\date{November 2025}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+This report presents the development and evaluation of a deep learning model for COVID-19 detection from chest X-ray images using the COVIDx CXR-4 dataset. We implement a centralized baseline model using a pretrained ResNet18 architecture and evaluate its performance using comprehensive medical imaging metrics. The centralized model achieves 55.51\% accuracy with an AUC-ROC of 0.600 on the test set. This baseline serves as the foundation for future federated learning experiments and trustworthiness enhancements including differential privacy and interpretability mechanisms.
+\end{abstract}
+
+%\tableofcontents
+%\newpage
+
+%==============================================================================
+\section{Introduction}
+%==============================================================================
+
+The COVID-19 pandemic has highlighted the critical need for rapid and accurate diagnostic tools. Chest X-ray imaging provides a cost-effective and widely available method for detecting pulmonary abnormalities associated with COVID-19 infection. This project aims to develop a trustworthy AI system for COVID-19 detection that addresses key concerns in medical AI deployment:
+
+\begin{itemize}
+    \item \textbf{Privacy}: Patient data protection through federated learning
+    \item \textbf{Interpretability}: Understanding model decisions through Grad-CAM and SHAP
+    \item \textbf{Robustness}: Ensuring reliable performance across different data distributions
+\end{itemize}
+
+This Stage 1 report focuses on establishing a centralized baseline model that will serve as a reference point for comparing federated learning approaches and trustworthiness enhancements in Stage 2.
+
+%==============================================================================
+\section{Dataset Description}
+%==============================================================================
+
+\subsection{COVIDx CXR-4 Dataset}
+
+We utilize the COVIDx CXR-4 dataset, a large-scale benchmark dataset for COVID-19 detection from chest X-ray images. The dataset is designed for binary classification:
+
+\begin{itemize}
+    \item \textbf{Class 0 (Negative)}: Non-COVID chest X-rays
+    \item \textbf{Class 1 (Positive)}: COVID-19 positive chest X-rays
+\end{itemize}
+
+\subsection{Dataset Statistics}
+
+\begin{table}[H]
+\centering
+\caption{Dataset Split Statistics}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Split} & \textbf{Negative} & \textbf{Positive} & \textbf{Total} \\
+\midrule
+Train & Multiple sources & Multiple sources & ~67,000 \\
+Validation & - & - & ~8,000 \\
+Test & 4,241 & 4,241 & 8,482 \\
+\bottomrule
+\end{tabular}
+\label{tab:dataset_stats}
+\end{table}
+
+The test set is balanced with equal numbers of positive and negative samples (4,241 each), enabling unbiased evaluation of model performance.
+
+\subsection{Data Sources}
+
+The dataset aggregates chest X-rays from multiple clinical sources:
+\begin{itemize}
+    \item BIMCV (Banco de Imagenes Medicas de la Comunidad Valenciana)
+    \item Stonybrook University
+    \item RSNA (Radiological Society of North America)
+    \item SIRM (Italian Society of Medical Radiology)
+    \item RICORD (RSNA International COVID-19 Open Radiology Database)
+    \item Cohen et al. GitHub repository
+    \item ActMed, Figure1 datasets
+\end{itemize}
+
+\subsection{Sample Images}
+
+Figure \ref{fig:data_samples} shows representative chest X-ray images from both classes.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/data_samples.png}
+    \caption{Sample chest X-ray images from the COVIDx CXR-4 dataset. Top row: COVID-19 positive cases showing characteristic bilateral lung opacities. Bottom row: COVID-19 negative cases showing clear lung fields.}
+    \label{fig:data_samples}
+\end{figure}
+
+%==============================================================================
+\section{Methodology}
+%==============================================================================
+
+\subsection{Model Architecture}
+
+We employ a transfer learning approach using ResNet18 \cite{he2016deep} pretrained on ImageNet as our backbone architecture.
+
+\begin{table}[H]
+\centering
+\caption{Model Architecture Details}
+\begin{tabular}{ll}
+\toprule
+\textbf{Component} & \textbf{Specification} \\
+\midrule
+Backbone & ResNet18 (pretrained on ImageNet) \\
+Input Size & 224 $\times$ 224 $\times$ 3 \\
+Feature Extractor & ResNet18 convolutional layers \\
+Dropout & 0.5 \\
+Output Layer & Fully connected (512 $\rightarrow$ 2) \\
+Total Parameters & 11,177,538 \\
+\bottomrule
+\end{tabular}
+\label{tab:model_arch}
+\end{table}
+
+\subsection{Data Preprocessing}
+
+All images undergo the following preprocessing pipeline:
+
+\begin{enumerate}
+    \item \textbf{Resize}: Images resized to 224 $\times$ 224 pixels
+    \item \textbf{Normalization}: ImageNet statistics (mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    \item \textbf{Tensor Conversion}: Convert to PyTorch tensor format
+\end{enumerate}
+
+\subsection{Training Configuration}
+
+\begin{table}[H]
+\centering
+\caption{Training Hyperparameters}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Epochs & 3 (early stopping) \\
+Batch Size & 32 \\
+Optimizer & Adam \\
+Learning Rate & 0.0001 \\
+Weight Decay & 0.00001 \\
+Scheduler & ReduceLROnPlateau \\
+Loss Function & CrossEntropyLoss \\
+\bottomrule
+\end{tabular}
+\label{tab:training_config}
+\end{table}
+
+%==============================================================================
+\section{Training Results}
+%==============================================================================
+
+\subsection{Training History}
+
+The model was trained for 3 epochs with the following progression:
+
+\begin{table}[H]
+\centering
+\caption{Training History per Epoch}
+\begin{tabular}{ccccc}
+\toprule
+\textbf{Epoch} & \textbf{Train Loss} & \textbf{Train Acc (\%)} & \textbf{Val Loss} & \textbf{Val Acc (\%)} \\
+\midrule
+1 & 0.0329 & 98.59 & 0.0090 & 99.71 \\
+2 & 0.0090 & 99.67 & 0.0048 & 99.88 \\
+3 & 0.0069 & 99.74 & 0.0030 & 99.90 \\
+\bottomrule
+\end{tabular}
+\label{tab:training_history}
+\end{table}
+
+The model demonstrates rapid convergence with:
+\begin{itemize}
+    \item Training accuracy improving from 98.59\% to 99.74\%
+    \item Validation accuracy reaching 99.90\%
+    \item Consistent decrease in both training and validation loss
+\end{itemize}
+
+%==============================================================================
+\section{Evaluation Results}
+%==============================================================================
+
+\subsection{Test Set Performance}
+
+The centralized model was evaluated on the held-out test set containing 8,482 samples.
+
+\begin{table}[H]
+\centering
+\caption{Classification Metrics on Test Set}
+\begin{tabular}{lc}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Accuracy & 55.51\% \\
+Precision (Positive) & 60.69\% \\
+Recall (Positive) & 31.27\% \\
+F1-Score (Positive) & 41.27\% \\
+\midrule
+Precision (Negative) & 53.71\% \\
+Recall (Negative) & 79.75\% \\
+F1-Score (Negative) & 64.19\% \\
+\midrule
+Macro Precision & 57.20\% \\
+Macro Recall & 55.51\% \\
+Macro F1-Score & 52.73\% \\
+\bottomrule
+\end{tabular}
+\label{tab:classification_metrics}
+\end{table}
+
+\subsection{Medical-Specific Metrics}
+
+For medical imaging applications, sensitivity and specificity are critical metrics:
+
+\begin{table}[H]
+\centering
+\caption{Medical Evaluation Metrics}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Metric} & \textbf{Value} & \textbf{Description} \\
+\midrule
+Sensitivity (TPR) & 31.27\% & Correctly identified COVID+ cases \\
+Specificity (TNR) & 79.75\% & Correctly identified COVID- cases \\
+AUC-ROC & 0.600 & Area under ROC curve \\
+AUC-PR & 0.617 & Area under Precision-Recall curve \\
+\bottomrule
+\end{tabular}
+\label{tab:medical_metrics}
+\end{table}
+
+\subsection{Confusion Matrix Analysis}
+
+\begin{table}[H]
+\centering
+\caption{Confusion Matrix (Counts)}
+\begin{tabular}{lcc}
+\toprule
+& \textbf{Predicted Negative} & \textbf{Predicted Positive} \\
+\midrule
+\textbf{Actual Negative} & 3,382 (TN) & 859 (FP) \\
+\textbf{Actual Positive} & 2,915 (FN) & 1,326 (TP) \\
+\bottomrule
+\end{tabular}
+\label{tab:confusion_matrix}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/centralized_confusion_matrix_normalized.png}
+    \caption{Normalized confusion matrix showing the percentage distribution of predictions. The model exhibits high specificity (79.75\%) but lower sensitivity (31.27\%).}
+    \label{fig:confusion_matrix}
+\end{figure}
+
+\subsection{ROC Curve Analysis}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/centralized_roc_curve.png}
+    \caption{Receiver Operating Characteristic (ROC) curve for the centralized model. The AUC of 0.600 indicates moderate discriminative ability above random chance (AUC = 0.5).}
+    \label{fig:roc_curve}
+\end{figure}
+
+\subsection{Class Distribution Analysis}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/centralized_class_distribution.png}
+    \caption{Comparison of ground truth and predicted class distributions. The model shows a tendency to predict negative class more frequently, resulting in lower sensitivity.}
+    \label{fig:class_distribution}
+\end{figure}
+
+%==============================================================================
+\section{Discussion}
+%==============================================================================
+
+\subsection{Performance Analysis}
+
+The observed gap between training/validation performance (99.90\% accuracy) and test performance (55.51\% accuracy) reveals several important insights:
+
+\begin{enumerate}
+    \item \textbf{Domain Shift}: The test set may contain images from different sources or acquisition conditions than the training data.
+
+    \item \textbf{Overfitting}: Despite regularization (dropout, weight decay), the model may have overfit to specific characteristics of the training data.
+
+    \item \textbf{Class Imbalance in Training}: The federated data split may have introduced bias toward negative predictions.
+
+    \item \textbf{Data Heterogeneity}: Different clinical sources contribute varying image quality and patient demographics.
+\end{enumerate}
+
+\subsection{Sensitivity vs. Specificity Trade-off}
+
+The model exhibits:
+\begin{itemize}
+    \item \textbf{High Specificity (79.75\%)}: Good at identifying non-COVID cases
+    \item \textbf{Low Sensitivity (31.27\%)}: Misses many COVID-positive cases
+\end{itemize}
+
+In medical screening applications, high sensitivity is typically preferred to minimize false negatives. The current model would benefit from:
+\begin{itemize}
+    \item Threshold adjustment to improve sensitivity
+    \item Class weighting during training
+    \item Data augmentation for positive class
+\end{itemize}
+
+\subsection{Comparison with Literature}
+
+Published COVIDx models report higher performance (>90\% accuracy). The gap suggests:
+\begin{itemize}
+    \item Need for longer training (more epochs)
+    \item Data preprocessing optimization
+    \item Architecture tuning
+\end{itemize}
+
+%==============================================================================
+\section{Federated Learning Setup}
+%==============================================================================
+
+For Stage 2, we implement a federated learning framework using Flower \cite{beutel2020flower}.
+
+\subsection{Client Data Partitioning}
+
+Data is split across 3 clients based on source institutions:
+
+\begin{table}[H]
+\centering
+\caption{Federated Client Data Distribution}
+\begin{tabular}{lll}
+\toprule
+\textbf{Client} & \textbf{Data Sources} & \textbf{Approx. Size} \\
+\midrule
+Client 0 & BIMCV & ~43,000 images \\
+Client 1 & Stonybrook, RSNA & ~22,000 images \\
+Client 2 & SIRM, RICORD, Cohen, ActMed, Fig1 & ~2,300 images \\
+\bottomrule
+\end{tabular}
+\label{tab:fl_clients}
+\end{table}
+
+This partitioning creates realistic non-IID (non-independent and identically distributed) data across clients, simulating real-world scenarios where different hospitals have different patient populations.
+
+\subsection{Federated Architecture}
+
+\begin{itemize}
+    \item \textbf{Aggregation Strategy}: FedAvg (Federated Averaging)
+    \item \textbf{Communication}: gRPC-based server-client communication
+    \item \textbf{Local Training}: 3 epochs per round
+    \item \textbf{Global Rounds}: Configurable (default: 10)
+\end{itemize}
+
+%==============================================================================
+\section{Future Work: Stage 2}
+%==============================================================================
+
+Stage 2 will focus on enhancing model trustworthiness through:
+
+\subsection{Privacy: Differential Privacy}
+\begin{itemize}
+    \item Implement DP-SGD using Opacus library
+    \item Evaluate privacy-utility trade-off at different $\epsilon$ values (1, 5, 10)
+    \item Compare local vs. central differential privacy approaches
+\end{itemize}
+
+\subsection{Interpretability}
+\begin{itemize}
+    \item \textbf{Grad-CAM}: Visualize regions influencing predictions
+    \item \textbf{SHAP}: Understand feature importance
+    \item \textbf{Attention Maps}: Highlight diagnostic regions in X-rays
+\end{itemize}
+
+\subsection{Robustness Testing}
+\begin{itemize}
+    \item Data poisoning attack resistance
+    \item Adversarial example testing (FGSM, PGD)
+    \item Out-of-distribution detection
+\end{itemize}
+
+%==============================================================================
+\section{Conclusion}
+%==============================================================================
+
+This Stage 1 report establishes a centralized baseline for COVID-19 detection from chest X-rays:
+
+\begin{itemize}
+    \item Successfully implemented a ResNet18-based model with 11.2M parameters
+    \item Achieved 55.51\% test accuracy with AUC-ROC of 0.600
+    \item Identified performance gap indicating domain shift challenges
+    \item Prepared federated learning infrastructure for Stage 2
+\end{itemize}
+
+The baseline model provides a foundation for comparing federated learning approaches and evaluating the impact of trustworthiness enhancements. Future work will focus on improving model performance while incorporating privacy-preserving mechanisms and interpretability tools.
+
+%==============================================================================
+
+%==============================================================================
+% References
+%==============================================================================
+
+\begin{thebibliography}{9}
+
+\bibitem{he2016deep}
+He, K., Zhang, X., Ren, S., \& Sun, J. (2016). Deep residual learning for image recognition. In \textit{Proceedings of the IEEE conference on computer vision and pattern recognition} (pp. 770-778).
+
+\bibitem{beutel2020flower}
+Beutel, D. J., et al. (2020). Flower: A friendly federated learning framework. \textit{arXiv preprint arXiv:2007.14390}.
+
+\bibitem{covidx}
+Wang, L., Lin, Z. Q., \& Wong, A. (2020). COVID-Net: A tailored deep convolutional neural network design for detection of COVID-19 cases from chest X-ray images. \textit{Scientific Reports}, 10(1), 1-12.
+
+\bibitem{opacus}
+Yousefpour, A., et al. (2021). Opacus: User-friendly differential privacy library in PyTorch. \textit{arXiv preprint arXiv:2109.12298}.
+
+\end{thebibliography}
+
+\end{document}

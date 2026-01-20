@@ -1,0 +1,1 @@
+cd /home/radu/projects/upb_aitdm_project && source .venv/bin/activate && python run_experiment_dp.py --epochs 5 --batch_size 32 --epsilons 5.0 10.0

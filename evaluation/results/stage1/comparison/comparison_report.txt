@@ -1,0 +1,80 @@
+================================================================================
+STAGE 1 MODEL COMPARISON REPORT
+Centralized vs Decentralized (Federated) Learning
+COVIDx CXR-4 Binary Classification
+================================================================================
+
+Report Generated: 2025-11-26 13:49:53
+
+Centralized Model Evaluation: 2025-11-26T03:20:27.959696
+Decentralized Model Evaluation: 2025-11-26T13:49:33.603307
+
+Test Samples: 8482
+
+--------------------------------------------------------------------------------
+METRICS COMPARISON TABLE
+--------------------------------------------------------------------------------
+
+Metric                     Centralized  Decentralized       Diff     Diff %
+---------------------------------------------------------------------------
+Accuracy                        0.5551         0.5029    -0.0521     -9.39%
+Precision                       0.6069         0.5015    -0.1054    -17.36%
+Recall                          0.3127         0.9946    +0.6819   +218.10%
+F1-Score                        0.4127         0.6668    +0.2541    +61.56%
+Sensitivity (TPR)               0.3127         0.9946    +0.6819   +218.10%
+Specificity (TNR)               0.7975         0.0113    -0.7861    -98.58%
+AUC-ROC                         0.6003         0.5588    -0.0415     -6.92%
+AUC-PR                          0.6167         0.5404    -0.0763    -12.37%
+Precision (Macro)               0.5720         0.5888    +0.0168     +2.94%
+Recall (Macro)                  0.5551         0.5029    -0.0521     -9.39%
+F1 (Macro)                      0.5273         0.3445    -0.1828    -34.66%
+Precision (Weighted)            0.5720         0.5888    +0.0168     +2.94%
+Recall (Weighted)               0.5551         0.5029    -0.0521     -9.39%
+F1 (Weighted)                   0.5273         0.3445    -0.1828    -34.66%
+
+--------------------------------------------------------------------------------
+CONFUSION MATRIX BREAKDOWN
+--------------------------------------------------------------------------------
+
+Centralized Model:
+  True Positives (TP):   1326
+  True Negatives (TN):   3382
+  False Positives (FP):  859
+  False Negatives (FN):  2915
+
+Decentralized Model:
+  True Positives (TP):   4218
+  True Negatives (TN):   48
+  False Positives (FP):  4193
+  False Negatives (FN):  23
+
+--------------------------------------------------------------------------------
+KEY OBSERVATIONS
+--------------------------------------------------------------------------------
+
+1. Accuracy: Centralized model outperforms decentralized by 5.21%
+2. F1-Score: Decentralized model outperforms centralized by 25.41%
+3. AUC-ROC: Centralized model outperforms decentralized by 0.0415
+
+--------------------------------------------------------------------------------
+INTERPRETATION FOR STAGE 1
+--------------------------------------------------------------------------------
+
+This comparison shows the performance trade-off between:
+  - Centralized training: All data aggregated on a single server
+  - Decentralized (Federated) training: Data remains on clients, only
+    model updates are shared
+
+For medical imaging (COVID detection), federated learning offers:
+  - Privacy preservation: Patient data never leaves the hospital
+  - Regulatory compliance: HIPAA/GDPR considerations
+  - Multi-center collaboration: Models trained across institutions
+
+Expected trade-offs:
+  - Federated models may show slight performance degradation due to
+    non-IID data distribution across clients
+  - Communication overhead and convergence considerations
+
+================================================================================
+END OF REPORT
+================================================================================

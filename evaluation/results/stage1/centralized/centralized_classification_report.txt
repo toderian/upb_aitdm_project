@@ -1,0 +1,38 @@
+Classification Report - Centralized Model
+Evaluation Date: 2025-11-26 03:20:27
+============================================================
+
+              precision    recall  f1-score   support
+
+    Negative       0.54      0.80      0.64      4241
+    Positive       0.61      0.31      0.41      4241
+
+    accuracy                           0.56      8482
+   macro avg       0.57      0.56      0.53      8482
+weighted avg       0.57      0.56      0.53      8482
+
+
+
+============================================================
+                CENTRALIZED Model Evaluation                
+============================================================
+
+Classification Metrics:
+  Accuracy:              55.51%
+  Precision:             60.69%
+  Recall:                31.27%
+  F1-Score:              41.27%
+
+Medical Metrics:
+  Sensitivity (TPR):     31.27%
+  Specificity (TNR):     79.75%
+  AUC-ROC:               0.6003
+  AUC-PR:                0.6167
+
+Confusion Matrix Breakdown:
+  True Positives (TP):   1326
+  True Negatives (TN):   3382
+  False Positives (FP):  859
+  False Negatives (FN):  2915
+
+============================================================

@@ -1,0 +1,38 @@
+Classification Report - Decentralized Model
+Evaluation Date: 2025-11-26 13:49:33
+============================================================
+
+              precision    recall  f1-score   support
+
+    Negative       0.68      0.01      0.02      4241
+    Positive       0.50      0.99      0.67      4241
+
+    accuracy                           0.50      8482
+   macro avg       0.59      0.50      0.34      8482
+weighted avg       0.59      0.50      0.34      8482
+
+
+
+============================================================
+               DECENTRALIZED Model Evaluation               
+============================================================
+
+Classification Metrics:
+  Accuracy:              50.29%
+  Precision:             50.15%
+  Recall:                99.46%
+  F1-Score:              66.68%
+
+Medical Metrics:
+  Sensitivity (TPR):     99.46%
+  Specificity (TNR):     1.13%
+  AUC-ROC:               0.5588
+  AUC-PR:                0.5404
+
+Confusion Matrix Breakdown:
+  True Positives (TP):   4218
+  True Negatives (TN):   48
+  False Positives (FP):  4193
+  False Negatives (FN):  23
+
+============================================================

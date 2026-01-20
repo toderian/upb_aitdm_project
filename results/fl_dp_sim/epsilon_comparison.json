@@ -1,0 +1,20 @@
+{
+  "results": [
+    {
+      "epsilon": 1.0,
+      "final_accuracy": 0.506,
+      "final_epsilon": 0.9923693878330319
+    },
+    {
+      "epsilon": 5.0,
+      "final_accuracy": 0.5,
+      "final_epsilon": 4.997169115832963
+    },
+    {
+      "epsilon": 10.0,
+      "final_accuracy": 0.5,
+      "final_epsilon": 9.992423214295771
+    }
+  ],
+  "timestamp": "2026-01-20T15:12:29.350152"
+}
