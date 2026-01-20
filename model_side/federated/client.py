@@ -119,8 +119,8 @@ def main(args):
     print(f"Client {args.client_id} using device: {device}")
 
     # Load client data
-    data_path = f"data/federated/client_{args.client_id}_data.npz"
-    print(f"Loading data from {data_path}")
+    # data_path = f"data/federated/client_{args.client_id}_data.npz"
+    # print(f"Loading data from {data_path}")
 
 
     # train_loader = torch.utils.data.DataLoader(
@@ -140,7 +140,7 @@ def main(args):
     # Start Flower client
     fl.client.start_client(
         server_address=args.server_address,
-        client=client.to_client()
+        client=client
     )
 
 

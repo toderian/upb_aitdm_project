@@ -1,7 +1,7 @@
 import flwr as fl
 import argparse
 from typing import List, Tuple, Dict, Optional
-from flwr.common import Metrics
+from flwr.common import Metrics, ndarrays_to_parameters
 
 def weighted_average(metrics: List[Tuple[int, Metrics]]) -> Metrics:
     """
@@ -64,6 +64,11 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
 
         return aggregated_parameters, metrics
 
+def get_initial_parameters():
+    """Get initial model parameters."""
+    model = COVIDxCNN(num_classes=2, pretrained=True)
+    return [val.cpu().numpy() for val in model.state_dict().values()]
+
 def main(args):
     # Define strategy
     strategy = SaveModelStrategy(
@@ -74,7 +79,9 @@ def main(args):
         min_available_clients=args.num_clients,
         evaluate_metrics_aggregation_fn=weighted_average,
         fit_metrics_aggregation_fn=weighted_average,
-        on_fit_config_fn=get_on_fit_config(args.local_epochs)
+        on_fit_config_fn=get_on_fit_config(args.local_epochs),
+        initial_parameters=ndarrays_to_parameters(get_initial_parameters()),  # Add this
+
     )
 
     # Server config

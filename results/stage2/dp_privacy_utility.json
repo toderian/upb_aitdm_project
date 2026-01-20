@@ -1,0 +1,20 @@
+[
+  {
+    "epsilon": 5.0,
+    "final_train_loss": 0.12499931240596458,
+    "final_train_acc": 0.9848551717730134,
+    "test_accuracy": 0.5
+  },
+  {
+    "epsilon": 10.0,
+    "final_train_loss": 0.11833719561241283,
+    "final_train_acc": 0.9858072009291522,
+    "test_accuracy": 0.5
+  },
+  {
+    "epsilon": "inf",
+    "final_train_loss": 0.561729349563806,
+    "final_train_acc": 0.705066988085856,
+    "test_accuracy": 0.6140061306295685
+  }
+]

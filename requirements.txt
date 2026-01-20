@@ -1,5 +1,6 @@
-#add the pytorch library associated with your CUDA version
-
+# PyTorch with CPU support (change to torch[cuda] for GPU)
+torch>=2.0.0
+torchvision>=0.15.0
 
 flwr>=1.0.0
 numpy>=1.21.0
@@ -10,3 +11,4 @@ matplotlib>=3.5.0
 seaborn>=0.12.0
 tqdm>=4.60.0
 pyyaml>=6.0
+opacus>=1.3.0

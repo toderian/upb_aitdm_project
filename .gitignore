@@ -9,3 +9,4 @@ venv
 /planning/
 /course_docs/
 __pycache__/
+/models/
